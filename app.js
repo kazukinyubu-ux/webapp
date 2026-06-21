@@ -14,7 +14,6 @@ const boardEl = document.getElementById("board");
 const bingoMessageEl = document.getElementById("bingoMessage");
 const syncStatusEl = document.getElementById("syncStatus");
 const roomIdEl = document.getElementById("roomId");
-const shareLinkEl = document.getElementById("shareLink");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
 
 if (!window.firebaseConfig) {
@@ -34,7 +33,6 @@ const db = getFirestore(firebaseApp);
 const roomRef = doc(db, "rooms", ROOM_ID);
 
 roomIdEl.textContent = ROOM_ID;
-shareLinkEl.href = `${location.origin}${location.pathname}?room=${encodeURIComponent(ROOM_ID)}`;
 
 let cells = Array(CELL_COUNT).fill(false);
 let bingoCount = 0;
@@ -134,7 +132,9 @@ async function initRealtimeSync() {
 
 async function copyShareLink() {
   try {
-    await navigator.clipboard.writeText(shareLinkEl.href);
+    await navigator.clipboard.writeText(
+      `${location.origin}${location.pathname}?room=${encodeURIComponent(ROOM_ID)}`
+    );
     copyLinkBtn.textContent = "コピーしました";
     setTimeout(() => {
       copyLinkBtn.textContent = "URLをコピー";
