@@ -57,7 +57,6 @@ body {
 .board {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
   min-height: 700px;
 }
 
@@ -68,3 +67,7 @@ body {
   height: 100%;
   display: block;
 }
+
+svg.setAttribute("width", "320");
+svg.setAttribute("height", "1400");
+svg.setAttribute("viewBox", "0 0 320 1400");
