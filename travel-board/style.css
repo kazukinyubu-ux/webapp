@@ -1,5 +1,3 @@
-/* ===== リセット ===== */
-
 *{
     margin:0;
     padding:0;
@@ -10,12 +8,10 @@ html,
 body{
     width:100%;
     height:100%;
-    font-family:sans-serif;
-    background:#f4f0e8;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background:linear-gradient(180deg, #f7f0e2 0%, #efe3cc 100%);
     color:#333;
 }
-
-/* ===== 全体 ===== */
 
 .app{
     width:100%;
@@ -32,6 +28,7 @@ body{
 .app__title{
     font-size:30px;
     margin-bottom:6px;
+    letter-spacing:.04em;
 }
 
 .app__subtitle{
@@ -45,86 +42,63 @@ body{
     font-size:13px;
 }
 
-/* ===== ボード ===== */
-
 .board-area{
-
-    background:white;
+    background:rgba(255,255,255,.78);
     border-radius:20px;
     padding:16px;
-
-    box-shadow:
-        0 8px 24px rgba(0,0,0,.08);
-
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
 }
 
 .board-shell{
-
     width:100%;
     aspect-ratio:16/9;
-
     overflow:hidden;
-
     border-radius:16px;
-
+    position:relative;
     background:
-        linear-gradient(
-            #faf8f4,
-            #f2ecdf
-        );
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.65) 0 8%, transparent 8.5%),
+        radial-gradient(circle at 74% 28%, rgba(255,255,255,.38) 0 7%, transparent 7.5%),
+        linear-gradient(180deg, #d9f3ff 0%, #bbe1ef 100%);
+}
 
+.board-shell::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.12) 0 25%, transparent 25% 100%),
+        linear-gradient(225deg, rgba(255,255,255,.10) 0 22%, transparent 22% 100%);
+    pointer-events:none;
+}
+
+.board-shell::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 0 0;
+    height:22%;
+    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,248,234,.18) 100%);
+    pointer-events:none;
 }
 
 .board{
-
     width:100%;
     height:100%;
-
+    position:relative;
 }
 
 .board svg{
-
     width:100%;
     height:100%;
     display:block;
-
 }
-
-/* ===== 縦持ち ===== */
-
-.rotate-message{
-    display:none;
-}
-
-@media (orientation:portrait){
-
-    .board-area{
-        display:none;
-    }
-
-    .rotate-message{
-
-        display:flex;
-        justify-content:center;
-        align-items:center;
-
-        height:70vh;
-
-        text-align:center;
-        font-size:24px;
-
-    }
-
-}
-
-/* ===== マップ ===== */
 
 .path-line{
     fill:none;
-    stroke:#bcae97;
+    stroke:#bfa98c;
     stroke-width:5;
     stroke-linecap:round;
-    stroke-dasharray:2 10;
+    stroke-dasharray:2 12;
+    opacity:.9;
 }
 
 .cell{
@@ -135,14 +109,25 @@ body{
     filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));
 }
 
-.island-fill{
-    fill:#f2dfbe;
+.island-shadow{
+    fill:#b08a54;
+    opacity:.18;
 }
 
-.island-stroke{
+.island-base{
+    fill:url(#islandGradient);
+}
+
+.island-highlight{
+    fill:url(#shoreGradient);
+    opacity:.55;
+}
+
+.island-outline{
     fill:none;
-    stroke:#8b7a65;
+    stroke:#8b724f;
     stroke-width:2.5;
+    stroke-linejoin:round;
 }
 
 .cell text{
@@ -154,4 +139,42 @@ body{
     stroke:#fffdf8;
     stroke-width:4;
     stroke-linejoin:round;
+}
+
+.palm-trunk{
+    fill:none;
+    stroke:#8c653a;
+    stroke-width:6;
+    stroke-linecap:round;
+}
+
+.palm-leaf{
+    fill:none;
+    stroke:#4b8d4e;
+    stroke-width:4;
+    stroke-linecap:round;
+}
+
+.palm-coconut{
+    fill:#6f4b2f;
+    opacity:.9;
+}
+
+.rotate-message{
+    display:none;
+}
+
+@media (orientation:portrait){
+    .board-area{
+        display:none;
+    }
+
+    .rotate-message{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:70vh;
+        text-align:center;
+        font-size:24px;
+    }
 }
