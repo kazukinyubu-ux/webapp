@@ -1,73 +1,118 @@
 /* ===== リセット ===== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 html,
-body {
-  width: 100%;
-  min-height: 100%;
-  font-family: sans-serif;
-  background: #f7f7f7;
-  color: #333;
+body{
+    width:100%;
+    height:100%;
+    font-family:sans-serif;
+    background:#f4f0e8;
+    color:#333;
 }
 
 /* ===== 全体 ===== */
 
-.app {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 16px;
+.app{
+    width:100%;
+    max-width:1700px;
+    margin:auto;
+    padding:20px;
 }
 
-.app__header {
-  margin-bottom: 20px;
+.app__header{
+    margin-bottom:18px;
+    text-align:center;
 }
 
-.app__title {
-  font-size: 24px;
-  margin-bottom: 4px;
+.app__title{
+    font-size:30px;
+    margin-bottom:6px;
 }
 
-.app__subtitle {
-  font-size: 14px;
-  color: #666;
+.app__subtitle{
+    color:#666;
 }
 
-.app__footer {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 13px;
-  color: #777;
+.app__footer{
+    margin-top:16px;
+    text-align:center;
+    color:#777;
+    font-size:13px;
 }
 
 /* ===== ボード ===== */
 
-.board-area {
-  background: white;
-  border-radius: 12px;
-  padding: 12px;
-  overflow: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.board-area{
+
+    background:white;
+    border-radius:20px;
+    padding:16px;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.08);
+
 }
 
-.board {
-  position: relative;
-  width: 100%;
-  min-height: 700px;
+.board-shell{
+
+    width:100%;
+    aspect-ratio:16/9;
+
+    overflow:hidden;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            #faf8f4,
+            #f2ecdf
+        );
+
 }
 
-/* app.jsから追加するSVG */
+.board{
 
-.board svg {
-  width: 100%;
-  height: 100%;
-  display: block;
+    width:100%;
+    height:100%;
+
 }
 
-svg.setAttribute("width", "320");
-svg.setAttribute("height", "1400");
-svg.setAttribute("viewBox", "0 0 320 1400");
+.board svg{
+
+    width:100%;
+    height:100%;
+    display:block;
+
+}
+
+/* ===== 縦持ち ===== */
+
+.rotate-message{
+    display:none;
+}
+
+@media (orientation:portrait){
+
+    .board-area{
+        display:none;
+    }
+
+    .rotate-message{
+
+        display:flex;
+        justify-content:center;
+        align-items:center;
+
+        height:70vh;
+
+        text-align:center;
+        font-size:24px;
+
+    }
+
+}
