@@ -116,3 +116,42 @@ body{
     }
 
 }
+
+/* ===== マップ ===== */
+
+.path-line{
+    fill:none;
+    stroke:#bcae97;
+    stroke-width:5;
+    stroke-linecap:round;
+    stroke-dasharray:2 10;
+}
+
+.cell{
+    cursor:pointer;
+}
+
+.cell:hover{
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));
+}
+
+.island-fill{
+    fill:#f2dfbe;
+}
+
+.island-stroke{
+    fill:none;
+    stroke:#8b7a65;
+    stroke-width:2.5;
+}
+
+.cell text{
+    fill:#4b443b;
+    font-size:12px;
+    text-anchor:middle;
+    dominant-baseline:middle;
+    paint-order:stroke;
+    stroke:#fffdf8;
+    stroke-width:4;
+    stroke-linejoin:round;
+}
