@@ -1,0 +1,70 @@
+/* ===== リセット ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  font-family: sans-serif;
+  background: #f7f7f7;
+  color: #333;
+}
+
+/* ===== 全体 ===== */
+
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app__header {
+  margin-bottom: 20px;
+}
+
+.app__title {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.app__subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+.app__footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #777;
+}
+
+/* ===== ボード ===== */
+
+.board-area {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  min-height: 700px;
+}
+
+/* app.jsから追加するSVG */
+
+.board svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

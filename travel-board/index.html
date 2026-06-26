@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>旅のしおりボード</title>
+    <meta name="description" content="すごろく風の旅のしおりボード" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <h1 class="app__title">旅のしおりボード</h1>
+        <p class="app__subtitle">マスをタップして、1マスずつ移動する旅の記録</p>
+      </header>
+
+      <section class="board-area" aria-label="旅のしおりボード">
+        <div id="board" class="board" aria-live="polite"></div>
+      </section>
+
+      <footer class="app__footer">
+        <p>タップできるのは隣接マスのみ</p>
+      </footer>
+    </main>
+  </body>
+</html>
