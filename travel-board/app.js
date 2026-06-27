@@ -4,11 +4,14 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const VIEW_W = 1600;
 const VIEW_H = 900;
 
-const COLS = 6;
 const CELL_W = 180;
 const CELL_H = 84;
-const GAP_X = 22;
-const GAP_Y = 22;
+const GAP_X = 18;
+const GAP_Y = 14;
+
+const MIN_COLS = 4;
+const MAX_COLS = 7;
+const TARGET_ROWS = 6; // これくらいが見やすい
 
 const board = document.getElementById("board");
 
@@ -63,30 +66,43 @@ function buildCells(days) {
 }
 
 function createLayout(total) {
-  const rows = Math.ceil(total / COLS);
-  const contentWidth = COLS * CELL_W + (COLS - 1) * GAP_X;
+  const cols = clamp(Math.ceil(total / TARGET_ROWS), MIN_COLS, MAX_COLS);
+  const rows = Math.ceil(total / cols);
+
+  const contentWidth = cols * CELL_W + (cols - 1) * GAP_X;
   const contentHeight = rows * CELL_H + (rows - 1) * GAP_Y;
 
   return {
+    cols,
     rows,
     startX: (VIEW_W - contentWidth) / 2,
-    startY: Math.max(34, (VIEW_H - contentHeight) / 2),
+    startY: Math.max(28, (VIEW_H - contentHeight) / 2),
   };
 }
 
 function getPosition(index, layout) {
-  const row = Math.floor(index / COLS);
-  const col = index % COLS;
+  const row = Math.floor(index / layout.cols);
+  const col = index % layout.cols;
   const reverse = row % 2 === 1;
 
-  const x =
-    layout.startX +
-    (reverse ? COLS - 1 - col : col) * (CELL_W + GAP_X) +
-    CELL_W / 2;
+  const localCol = reverse ? layout.cols - 1 - col : col;
 
-  const y = layout.startY + row * (CELL_H + GAP_Y) + CELL_H / 2;
+  const baseX =
+    layout.startX + localCol * (CELL_W + GAP_X) + CELL_W / 2;
 
-  return { x, y, row, col };
+  const baseY =
+    layout.startY + row * (CELL_H + GAP_Y) + CELL_H / 2;
+
+  // ほどよいジグザグ感
+  const waveX = row % 2 === 0 ? 0 : 10;
+  const waveY = col % 2 === 0 ? 0 : 4;
+
+  return {
+    x: baseX + waveX,
+    y: baseY + waveY,
+    row,
+    col,
+  };
 }
 
 function appendDefs() {
@@ -108,7 +124,10 @@ function drawConnections(total, layout) {
     const mx = (from.x + to.x) / 2;
     const my = (from.y + to.y) / 2;
 
-    path.setAttribute("d", `M ${from.x} ${from.y} Q ${mx} ${my - 24} ${to.x} ${to.y}`);
+    path.setAttribute(
+      "d",
+      `M ${from.x} ${from.y} Q ${mx} ${my - 22} ${to.x} ${to.y}`
+    );
     path.setAttribute("class", "path-line");
     svg.appendChild(path);
   }
@@ -186,4 +205,8 @@ function wrapText(text, maxChars) {
 
   if (current) lines.push(current);
   return lines.slice(0, 3);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }
