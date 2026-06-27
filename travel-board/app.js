@@ -13,9 +13,6 @@ const MIN_COLS = 4;
 const MAX_COLS = 7;
 const TARGET_ROWS = 6;
 
-const ROW_WAVE = [0, 10, 18, 12, 4, -6, 2];
-const COL_WAVE = [0, 4, 10, 6, 2, -2, 0];
-
 const board = document.getElementById("board");
 
 if (!board) {
@@ -94,9 +91,12 @@ function getPosition(index, layout) {
     layout.startX + localCol * (CELL_W + GAP_X) + CELL_W / 2;
 
   const baseY =
-    layout.startY + row * (CELL_H + GAP_Y) + CELL_H / 2;
+    layout.startY +
+    row * (CELL_H + GAP_Y) +
+    CELL_H / 2;
 
-  const waveY = ROW_WAVE[row % ROW_WAVE.length] + COL_WAVE[col % COL_WAVE.length];
+  // マスごとに波打たせる
+  const waveY = Math.sin(index * 0.8) * 28;
 
   return {
     x: baseX,
