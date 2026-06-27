@@ -11,7 +11,10 @@ const GAP_Y = 14;
 
 const MIN_COLS = 4;
 const MAX_COLS = 7;
-const TARGET_ROWS = 6; // これくらいが見やすい
+const TARGET_ROWS = 6;
+
+const ROW_WAVE = [0, 10, 18, 12, 4, -6, 2];
+const COL_WAVE = [0, 4, 10, 6, 2, -2, 0];
 
 const board = document.getElementById("board");
 
@@ -93,12 +96,10 @@ function getPosition(index, layout) {
   const baseY =
     layout.startY + row * (CELL_H + GAP_Y) + CELL_H / 2;
 
-  // ほどよいジグザグ感
-  const waveX = row % 2 === 0 ? 0 : 10;
-  const waveY = col % 2 === 0 ? 0 : 4;
+  const waveY = ROW_WAVE[row % ROW_WAVE.length] + COL_WAVE[col % COL_WAVE.length];
 
   return {
-    x: baseX + waveX,
+    x: baseX,
     y: baseY + waveY,
     row,
     col,
@@ -123,10 +124,11 @@ function drawConnections(total, layout) {
     const path = document.createElementNS(SVG_NS, "path");
     const mx = (from.x + to.x) / 2;
     const my = (from.y + to.y) / 2;
+    const bend = from.row === to.row ? -18 : -28;
 
     path.setAttribute(
       "d",
-      `M ${from.x} ${from.y} Q ${mx} ${my - 22} ${to.x} ${to.y}`
+      `M ${from.x} ${from.y} Q ${mx} ${my + bend} ${to.x} ${to.y}`
     );
     path.setAttribute("class", "path-line");
     svg.appendChild(path);
