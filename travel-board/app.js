@@ -66,37 +66,20 @@ function drawCell(cell) {
   group.setAttribute("class", "cell");
   group.dataset.id = String(cell.id);
 
-  const pathD = createIslandPath(cell.x, cell.y, 112, 74, cell.id);
+  const rect = document.createElementNS(SVG_NS, "rect");
+  rect.setAttribute("x", String(cell.x - 86));
+  rect.setAttribute("y", String(cell.y - 52));
+  rect.setAttribute("width", "172");
+  rect.setAttribute("height", "104");
+  rect.setAttribute("rx", "18");
+  rect.setAttribute("ry", "18");
+  rect.setAttribute("class", "cell-box");
 
-  const shadow = document.createElementNS(SVG_NS, "path");
-  shadow.setAttribute("d", pathD);
-  shadow.setAttribute("class", "island-shadow");
-  shadow.setAttribute("transform", "translate(8 10)");
-  group.appendChild(shadow);
-
-  const base = document.createElementNS(SVG_NS, "path");
-  base.setAttribute("d", pathD);
-  base.setAttribute("class", "island-base");
-  base.setAttribute("filter", "url(#islandShadow)");
-  group.appendChild(base);
-
-  const highlight = document.createElementNS(SVG_NS, "path");
-  highlight.setAttribute("d", createHighlightPath(cell.x, cell.y, 106, 66, cell.id));
-  highlight.setAttribute("class", "island-highlight");
-  group.appendChild(highlight);
-
-  const outline = document.createElementNS(SVG_NS, "path");
-  outline.setAttribute("d", pathD);
-  outline.setAttribute("class", "island-outline");
-  group.appendChild(outline);
-
-  if (cell.id % 4 === 1 || cell.id % 7 === 0) {
-    appendPalmTree(group, cell.x - 48, cell.y - 52, 0.95);
-  }
+  group.appendChild(rect);
 
   const text = document.createElementNS(SVG_NS, "text");
   text.setAttribute("x", String(cell.x));
-  text.setAttribute("y", String(cell.y - 2));
+  text.setAttribute("y", String(cell.y - 3));
 
   const lines = wrapText(String(cell.text ?? ""), 8);
   lines.forEach((line, index) => {
