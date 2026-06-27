@@ -1,6 +1,15 @@
-import { CELLS } from "./data.js";
+import { DAYS } from "./data.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+const VIEW_W = 1600;
+const VIEW_H = 900;
+
+const COLS = 5;
+const CELL_W = 220;
+const CELL_H = 82;
+const GAP_X = 24;
+const GAP_Y = 14;
+
 const board = document.getElementById("board");
 
 if (!board) {
@@ -8,182 +17,168 @@ if (!board) {
 }
 
 const svg = document.createElementNS(SVG_NS, "svg");
-svg.setAttribute("viewBox", "0 0 1600 900");
+svg.setAttribute("viewBox", `0 0 ${VIEW_W} ${VIEW_H}`);
 svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 board.appendChild(svg);
 
+const CELLS = buildCells(DAYS);
+const layout = createLayout(CELLS.length);
+
 appendDefs();
-drawConnections();
-CELLS.forEach(drawCell);
+drawConnections(CELLS, layout);
+CELLS.forEach((cell, index) => drawCell(cell, getPosition(index, layout)));
+
+function buildCells(days) {
+  const cells = [];
+
+  cells.push({
+    type: "start",
+    label: "START",
+    color: "#65C39A",
+  });
+
+  days.forEach((day) => {
+    cells.push({
+      type: "day",
+      label: day.title,
+      color: day.color,
+    });
+
+    day.events.forEach((eventText) => {
+      cells.push({
+        type: "event",
+        label: eventText,
+        color: day.color,
+      });
+    });
+  });
+
+  cells.push({
+    type: "goal",
+    label: "GOAL",
+    color: "#F48C8C",
+  });
+
+  return cells;
+}
+
+function createLayout(total) {
+  const rows = Math.ceil(total / COLS);
+  const contentWidth = COLS * CELL_W + (COLS - 1) * GAP_X;
+  const contentHeight = rows * CELL_H + (rows - 1) * GAP_Y;
+
+  const startX = (VIEW_W - contentWidth) / 2;
+  const startY = Math.max(36, (VIEW_H - contentHeight) / 2);
+
+  return {
+    rows,
+    startX,
+    startY,
+  };
+}
+
+function getPosition(index, layout) {
+  const row = Math.floor(index / COLS);
+  const col = index % COLS;
+  const reverse = row % 2 === 1;
+
+  const x =
+    layout.startX +
+    (reverse ? COLS - 1 - col : col) * (CELL_W + GAP_X) +
+    CELL_W / 2;
+
+  const y = layout.startY + row * (CELL_H + GAP_Y) + CELL_H / 2;
+
+  return { x, y, row, col };
+}
 
 function appendDefs() {
   const defs = document.createElementNS(SVG_NS, "defs");
   defs.innerHTML = `
-    <linearGradient id="seaGradient" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#dff4ff" />
-      <stop offset="100%" stop-color="#b8deea" />
-    </linearGradient>
-
-    <linearGradient id="islandGradient" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f9e8be" />
-      <stop offset="55%" stop-color="#eecf95" />
-      <stop offset="100%" stop-color="#cfa25d" />
-    </linearGradient>
-
-    <linearGradient id="shoreGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fff4d8" stop-opacity="0.95" />
-      <stop offset="100%" stop-color="#ffe0a2" stop-opacity="0.15" />
-    </linearGradient>
-
-    <filter id="islandShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="8" dy="12" stdDeviation="8" flood-color="#6b563d" flood-opacity="0.25" />
-    </filter>
-
-    <filter id="palmShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="2" dy="4" stdDeviation="2" flood-color="#5c452c" flood-opacity="0.24" />
+    <filter id="cellShadow" x="-30%" y="-30%" width="170%" height="170%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#5c452c" flood-opacity="0.18" />
     </filter>
   `;
   svg.appendChild(defs);
 }
 
-function drawConnections() {
-  for (let i = 0; i < CELLS.length - 1; i++) {
-    const from = CELLS[i];
-    const to = CELLS[i + 1];
+function drawConnections(cells, layout) {
+  for (let i = 0; i < cells.length - 1; i++) {
+    const from = getPosition(i, layout);
+    const to = getPosition(i + 1, layout);
 
     const path = document.createElementNS(SVG_NS, "path");
     const mx = (from.x + to.x) / 2;
     const my = (from.y + to.y) / 2;
 
-    path.setAttribute("d", `M ${from.x} ${from.y} Q ${mx} ${my - 42} ${to.x} ${to.y}`);
+    path.setAttribute("d", `M ${from.x} ${from.y} Q ${mx} ${my - 38} ${to.x} ${to.y}`);
     path.setAttribute("class", "path-line");
     svg.appendChild(path);
   }
 }
 
-function drawCell(cell) {
+function drawCell(cell, pos) {
   const group = document.createElementNS(SVG_NS, "g");
-  group.setAttribute("class", "cell");
-  group.dataset.id = String(cell.id);
+  group.setAttribute("class", `cell cell--${cell.type}`);
+  group.dataset.type = cell.type;
 
-  const rect = document.createElementNS(SVG_NS, "rect");
-  rect.setAttribute("x", String(cell.x - 86));
-  rect.setAttribute("y", String(cell.y - 52));
-  rect.setAttribute("width", "172");
-  rect.setAttribute("height", "104");
-  rect.setAttribute("rx", "18");
-  rect.setAttribute("ry", "18");
-  rect.setAttribute("class", "cell-box");
+  const shadow = document.createElementNS(SVG_NS, "rect");
+  setBoxAttributes(shadow, pos.x + 5, pos.y + 6);
+  shadow.setAttribute("class", "cell-shadow");
+  group.appendChild(shadow);
 
-  group.appendChild(rect);
+  const bg = document.createElementNS(SVG_NS, "rect");
+  setBoxAttributes(bg, pos.x, pos.y);
+  bg.setAttribute("class", `cell-box cell-box--${cell.type}`);
+  bg.setAttribute("filter", "url(#cellShadow)");
+  group.appendChild(bg);
 
-  const text = document.createElementNS(SVG_NS, "text");
-  text.setAttribute("x", String(cell.x));
-  text.setAttribute("y", String(cell.y - 3));
+  const accent = document.createElementNS(SVG_NS, "rect");
+  accent.setAttribute("x", String(pos.x - CELL_W / 2));
+  accent.setAttribute("y", String(pos.y - CELL_H / 2));
+  accent.setAttribute("width", String(CELL_W));
+  accent.setAttribute("height", "14");
+  accent.setAttribute("rx", "18");
+  accent.setAttribute("ry", "18");
+  accent.setAttribute("class", `cell-accent cell-accent--${cell.type}`);
+  group.appendChild(accent);
 
-  const lines = wrapText(String(cell.text ?? ""), 8);
+  const label = document.createElementNS(SVG_NS, "text");
+  label.setAttribute("x", String(pos.x));
+  label.setAttribute("y", String(pos.y - 3));
+  label.setAttribute("class", `cell-text cell-text--${cell.type}`);
+
+  const lines = wrapText(cell.label, cell.type === "day" ? 5 : 9);
   lines.forEach((line, index) => {
     const tspan = document.createElementNS(SVG_NS, "tspan");
-    tspan.setAttribute("x", String(cell.x));
-    tspan.setAttribute("dy", index === 0 ? "0" : "1.25em");
+    tspan.setAttribute("x", String(pos.x));
+    tspan.setAttribute("dy", index === 0 ? "0" : "1.2em");
     tspan.textContent = line;
-    text.appendChild(tspan);
+    label.appendChild(tspan);
   });
 
-  group.appendChild(text);
+  group.appendChild(label);
+
   svg.appendChild(group);
 }
 
-function createIslandPath(cx, cy, rx, ry, seed = 0) {
-  const wobble = [
-    [1.08, 0.90],
-    [1.16, 0.98],
-    [1.04, 1.10],
-    [0.90, 1.15],
-    [0.78, 1.00],
-    [0.86, 0.84],
-    [0.96, 0.78],
-    [1.10, 0.88],
-  ];
-
-  const points = [];
-  const rotationOffset = (seed % 5) * 4;
-
-  for (let i = 0; i < 8; i++) {
-    const angle = (((-30 + i * 45 + rotationOffset) * Math.PI) / 180);
-    const [wx, wy] = wobble[(i + seed) % wobble.length];
-    points.push({
-      x: cx + Math.cos(angle) * rx * wx,
-      y: cy + Math.sin(angle) * ry * wy,
-    });
-  }
-
-  let d = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    const n = points[(i + 1) % points.length];
-    const mx = (p.x + n.x) / 2;
-    const my = (p.y + n.y) / 2;
-    d += ` Q ${p.x} ${p.y} ${mx} ${my}`;
-  }
-  d += " Z";
-  return d;
-}
-
-function createHighlightPath(cx, cy, rx, ry, seed = 0) {
-  const offsetX = seed % 3 === 0 ? -18 : -14;
-  const offsetY = seed % 2 === 0 ? -16 : -12;
-  const w = rx * 0.78;
-  const h = ry * 0.42;
-
-  return [
-    `M ${cx - w + offsetX} ${cy - h + offsetY}`,
-    `C ${cx - w * 0.55 + offsetX} ${cy - h * 1.4 + offsetY} ${cx + w * 0.10} ${cy - h * 1.2} ${cx + w * 0.28} ${cy - h * 0.7}`,
-    `C ${cx + w * 0.15} ${cy - h * 0.15} ${cx - w * 0.25} ${cy + h * 0.10} ${cx - w * 0.55 + offsetX} ${cy - h * 0.15 + offsetY}`,
-    "Z",
-  ].join(" ");
-}
-
-function appendPalmTree(group, x, y, scale = 1) {
-  const palm = document.createElementNS(SVG_NS, "g");
-  palm.setAttribute("filter", "url(#palmShadow)");
-  palm.setAttribute("transform", `translate(${x} ${y}) scale(${scale})`);
-  group.appendChild(palm);
-
-  const trunk = document.createElementNS(SVG_NS, "path");
-  trunk.setAttribute("d", "M 22 78 C 18 60, 24 42, 28 26 C 31 14, 29 8, 24 0");
-  trunk.setAttribute("class", "palm-trunk");
-  palm.appendChild(trunk);
-
-  const leaves = [
-    "M 24 4 C 8 4, 0 10, -8 20",
-    "M 24 4 C 38 0, 48 6, 58 16",
-    "M 24 4 C 20 -10, 10 -18, 0 -24",
-    "M 24 4 C 28 -12, 42 -18, 56 -18",
-  ];
-
-  leaves.forEach((d, index) => {
-    const leaf = document.createElementNS(SVG_NS, "path");
-    leaf.setAttribute("d", d);
-    leaf.setAttribute("class", `palm-leaf palm-leaf--${index + 1}`);
-    palm.appendChild(leaf);
-  });
-
-  const coconuts = document.createElementNS(SVG_NS, "circle");
-  coconuts.setAttribute("cx", "24");
-  coconuts.setAttribute("cy", "6");
-  coconuts.setAttribute("r", "4");
-  coconuts.setAttribute("class", "palm-coconut");
-  palm.appendChild(coconuts);
+function setBoxAttributes(node, x, y) {
+  node.setAttribute("x", String(x - CELL_W / 2));
+  node.setAttribute("y", String(y - CELL_H / 2));
+  node.setAttribute("width", String(CELL_W));
+  node.setAttribute("height", String(CELL_H));
+  node.setAttribute("rx", "18");
+  node.setAttribute("ry", "18");
 }
 
 function wrapText(text, maxChars) {
-  if (text.length <= maxChars) return [text];
+  const str = String(text ?? "");
+  if (str.length <= maxChars) return [str];
 
   const lines = [];
   let current = "";
 
-  for (const char of text) {
+  for (const char of str) {
     if (current.length >= maxChars) {
       lines.push(current);
       current = char;

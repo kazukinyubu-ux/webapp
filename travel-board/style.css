@@ -54,32 +54,11 @@ body{
     aspect-ratio:16/9;
     overflow:hidden;
     border-radius:16px;
-    background:linear-gradient(180deg, #d9f3ff 0%, #bbe1ef 100%);
-}
-
-.path-line{
-    fill:none;
-    stroke:#bfa98c;
-    stroke-width:5;
-    stroke-linecap:round;
-    stroke-dasharray:2 12;
-}
-
-.cell-box{
-    fill:#f2dfbe;
-    stroke:#8b724f;
-    stroke-width:2.5;
-}
-
-.cell text{
-    fill:#4b443b;
-    font-size:12px;
-    text-anchor:middle;
-    dominant-baseline:middle;
-    paint-order:stroke;
-    stroke:#fffdf8;
-    stroke-width:4;
-    stroke-linejoin:round;
+    position:relative;
+    background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.65) 0 8%, transparent 8.5%),
+        radial-gradient(circle at 74% 28%, rgba(255,255,255,.38) 0 7%, transparent 7.5%),
+        linear-gradient(180deg, #d9f3ff 0%, #bbe1ef 100%);
 }
 
 .board-shell::before{
@@ -130,30 +109,58 @@ body{
     filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));
 }
 
-.island-shadow{
-    fill:#b08a54;
-    opacity:.18;
+.cell-shadow{
+    fill:#000;
+    opacity:.08;
 }
 
-.island-base{
-    fill:url(#islandGradient);
-}
-
-.island-highlight{
-    fill:url(#shoreGradient);
-    opacity:.55;
-}
-
-.island-outline{
-    fill:none;
-    stroke:#8b724f;
+.cell-box{
     stroke-width:2.5;
     stroke-linejoin:round;
 }
 
-.cell text{
+.cell-box--start{
+    fill:#dff5ea;
+    stroke:#4ea47c;
+}
+
+.cell-box--day{
+    fill:#fff7ea;
+    stroke:#b28a2c;
+}
+
+.cell-box--event{
+    fill:#fffdf8;
+    stroke:#d7c7ac;
+}
+
+.cell-box--goal{
+    fill:#ffe7e7;
+    stroke:#d06f6f;
+}
+
+.cell-accent{
+    opacity:.95;
+}
+
+.cell-accent--start{
+    fill:#4ea47c;
+}
+
+.cell-accent--day{
+    fill:#f0b84f;
+}
+
+.cell-accent--event{
+    fill:#d9c39d;
+}
+
+.cell-accent--goal{
+    fill:#d06f6f;
+}
+
+.cell-text{
     fill:#4b443b;
-    font-size:12px;
     text-anchor:middle;
     dominant-baseline:middle;
     paint-order:stroke;
@@ -162,23 +169,19 @@ body{
     stroke-linejoin:round;
 }
 
-.palm-trunk{
-    fill:none;
-    stroke:#8c653a;
-    stroke-width:6;
-    stroke-linecap:round;
+.cell-text--start,
+.cell-text--goal{
+    font-weight:700;
+    letter-spacing:.08em;
 }
 
-.palm-leaf{
-    fill:none;
-    stroke:#4b8d4e;
-    stroke-width:4;
-    stroke-linecap:round;
+.cell-text--day{
+    font-weight:700;
+    font-size:14px;
 }
 
-.palm-coconut{
-    fill:#6f4b2f;
-    opacity:.9;
+.cell-text--event{
+    font-size:12px;
 }
 
 .rotate-message{
