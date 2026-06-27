@@ -40,6 +40,7 @@ function buildCells(days) {
     color: "#65C39A",
   });
 
+  days.forEach((day) => {
     day.events.forEach((eventText) => {
       result.push({
         type: "event",
