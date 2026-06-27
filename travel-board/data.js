@@ -58,5 +58,4 @@ export const DAYS = [
       "小松空港",
     ],
   },
-  },
 ];

@@ -7,7 +7,7 @@ const VIEW_H = 900;
 const CELL_W = 180;
 const CELL_H = 84;
 const GAP_X = 18;
-const GAP_Y = 14;
+const GAP_Y = 26;
 
 const MIN_COLS = 4;
 const MAX_COLS = 7;
@@ -39,13 +39,6 @@ function buildCells(days) {
     label: "START",
     color: "#65C39A",
   });
-
-  days.forEach((day) => {
-    result.push({
-      type: "day",
-      label: day.title,
-      color: day.color,
-    });
 
     day.events.forEach((eventText) => {
       result.push({
