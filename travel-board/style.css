@@ -8,8 +8,8 @@ html,
 body{
     width:100%;
     height:100%;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    background:linear-gradient(180deg, #f7f0e2 0%, #efe3cc 100%);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(180deg,#f7f0e2 0%,#efe3cc 100%);
     color:#333;
 }
 
@@ -42,48 +42,37 @@ body{
     font-size:13px;
 }
 
+/*==============================
+  ボード
+==============================*/
+
 .board-area{
-    background:rgba(255,255,255,.78);
-    border-radius:20px;
+    background:rgba(255,255,255,.8);
+    border-radius:22px;
     padding:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 .board-shell{
+
     width:100%;
     aspect-ratio:16/9;
+
     overflow:hidden;
-    border-radius:16px;
+
+    border-radius:18px;
     position:relative;
-    background:
-        radial-gradient(circle at 20% 18%, rgba(255,255,255,.65) 0 8%, transparent 8.5%),
-        radial-gradient(circle at 74% 28%, rgba(255,255,255,.38) 0 7%, transparent 7.5%),
-        linear-gradient(180deg, #d9f3ff 0%, #bbe1ef 100%);
-}
 
-.board-shell::before{
-    content:"";
-    position:absolute;
-    inset:0;
     background:
-        linear-gradient(135deg, rgba(255,255,255,.12) 0 25%, transparent 25% 100%),
-        linear-gradient(225deg, rgba(255,255,255,.10) 0 22%, transparent 22% 100%);
-    pointer-events:none;
-}
+        radial-gradient(circle at 20% 18%,rgba(255,255,255,.55) 0 8%,transparent 8.5%),
+        radial-gradient(circle at 76% 30%,rgba(255,255,255,.35) 0 7%,transparent 7.5%),
+        linear-gradient(180deg,#d9f3ff,#bfe5ef);
 
-.board-shell::after{
-    content:"";
-    position:absolute;
-    inset:auto 0 0 0;
-    height:22%;
-    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,248,234,.18) 100%);
-    pointer-events:none;
 }
 
 .board{
     width:100%;
     height:100%;
-    position:relative;
 }
 
 .board svg{
@@ -92,21 +81,34 @@ body{
     display:block;
 }
 
+/*==============================
+  線
+==============================*/
+
 .path-line{
+
     fill:none;
-    stroke:#bfa98c;
+
+    stroke:#c4ad88;
     stroke-width:5;
+
     stroke-linecap:round;
-    stroke-dasharray:2 12;
+    stroke-dasharray:2 10;
+
     opacity:.9;
+
 }
+
+/*==============================
+  マス
+==============================*/
 
 .cell{
     cursor:pointer;
 }
 
 .cell:hover{
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));
+    transform:translateY(-2px);
 }
 
 .cell-shadow{
@@ -115,90 +117,136 @@ body{
 }
 
 .cell-box{
+
+    fill:white;
+
     stroke-width:2.5;
     stroke-linejoin:round;
+
 }
+
+/* START */
 
 .cell-box--start{
+
     fill:#dff5ea;
-    stroke:#4ea47c;
+    stroke:#55ae83;
+
 }
 
-.cell-box--day{
-    fill:#fff7ea;
-    stroke:#b28a2c;
-}
-
-.cell-box--event{
-    fill:#fffdf8;
-    stroke:#d7c7ac;
-}
+/* GOAL */
 
 .cell-box--goal{
-    fill:#ffe7e7;
-    stroke:#d06f6f;
+
+    fill:#ffe4e4;
+    stroke:#d45d5d;
+
 }
+
+/* 日付・イベント */
+
+.cell-box--day,
+.cell-box--event{
+
+    fill:var(--accent);
+
+    fill-opacity:.18;
+
+    stroke:var(--accent);
+
+}
+
+/*==============================
+ 上帯
+==============================*/
 
 .cell-accent{
-    opacity:.95;
+
+    fill:var(--accent);
+
 }
 
-.cell-accent--start{
-    fill:#4ea47c;
+/* START */
+
+.cell--start .cell-accent{
+
+    fill:#55ae83;
+
 }
 
-.cell-accent--day{
-    fill:#f0b84f;
+/* GOAL */
+
+.cell--goal .cell-accent{
+
+    fill:#d45d5d;
+
 }
 
-.cell-accent--event{
-    fill:#d9c39d;
-}
-
-.cell-accent--goal{
-    fill:#d06f6f;
-}
+/*==============================
+ 文字
+==============================*/
 
 .cell-text{
-    fill:#4b443b;
+
+    fill:#3f3a34;
+
     text-anchor:middle;
     dominant-baseline:middle;
+
     paint-order:stroke;
-    stroke:#fffdf8;
+    stroke:white;
     stroke-width:4;
+
     stroke-linejoin:round;
+
 }
 
 .cell-text--start,
 .cell-text--goal{
+
+    font-size:16px;
     font-weight:700;
-    letter-spacing:.08em;
+
 }
 
 .cell-text--day{
-    font-weight:700;
+
     font-size:14px;
+    font-weight:700;
+
 }
 
 .cell-text--event{
+
     font-size:12px;
+
 }
+
+/*==============================
+ 縦画面
+==============================*/
 
 .rotate-message{
     display:none;
 }
 
 @media (orientation:portrait){
+
     .board-area{
         display:none;
     }
 
     .rotate-message{
+
         display:flex;
         justify-content:center;
         align-items:center;
+
         height:70vh;
+
         text-align:center;
         font-size:24px;
+
     }
+
 }

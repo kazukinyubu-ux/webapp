@@ -4,11 +4,11 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const VIEW_W = 1600;
 const VIEW_H = 900;
 
-const COLS = 5;
-const CELL_W = 220;
-const CELL_H = 82;
-const GAP_X = 24;
-const GAP_Y = 14;
+const COLS = 6;
+const CELL_W = 180;
+const CELL_H = 84;
+const GAP_X = 22;
+const GAP_Y = 22;
 
 const board = document.getElementById("board");
 
@@ -21,31 +21,31 @@ svg.setAttribute("viewBox", `0 0 ${VIEW_W} ${VIEW_H}`);
 svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 board.appendChild(svg);
 
-const CELLS = buildCells(DAYS);
-const layout = createLayout(CELLS.length);
+const cells = buildCells(DAYS);
+const layout = createLayout(cells.length);
 
 appendDefs();
-drawConnections(CELLS, layout);
-CELLS.forEach((cell, index) => drawCell(cell, getPosition(index, layout)));
+drawConnections(cells.length, layout);
+cells.forEach((cell, index) => drawCell(cell, getPosition(index, layout)));
 
 function buildCells(days) {
-  const cells = [];
+  const result = [];
 
-  cells.push({
+  result.push({
     type: "start",
     label: "START",
     color: "#65C39A",
   });
 
   days.forEach((day) => {
-    cells.push({
+    result.push({
       type: "day",
       label: day.title,
       color: day.color,
     });
 
     day.events.forEach((eventText) => {
-      cells.push({
+      result.push({
         type: "event",
         label: eventText,
         color: day.color,
@@ -53,13 +53,13 @@ function buildCells(days) {
     });
   });
 
-  cells.push({
+  result.push({
     type: "goal",
     label: "GOAL",
     color: "#F48C8C",
   });
 
-  return cells;
+  return result;
 }
 
 function createLayout(total) {
@@ -67,13 +67,10 @@ function createLayout(total) {
   const contentWidth = COLS * CELL_W + (COLS - 1) * GAP_X;
   const contentHeight = rows * CELL_H + (rows - 1) * GAP_Y;
 
-  const startX = (VIEW_W - contentWidth) / 2;
-  const startY = Math.max(36, (VIEW_H - contentHeight) / 2);
-
   return {
     rows,
-    startX,
-    startY,
+    startX: (VIEW_W - contentWidth) / 2,
+    startY: Math.max(34, (VIEW_H - contentHeight) / 2),
   };
 }
 
@@ -102,8 +99,8 @@ function appendDefs() {
   svg.appendChild(defs);
 }
 
-function drawConnections(cells, layout) {
-  for (let i = 0; i < cells.length - 1; i++) {
+function drawConnections(total, layout) {
+  for (let i = 0; i < total - 1; i++) {
     const from = getPosition(i, layout);
     const to = getPosition(i + 1, layout);
 
@@ -111,7 +108,7 @@ function drawConnections(cells, layout) {
     const mx = (from.x + to.x) / 2;
     const my = (from.y + to.y) / 2;
 
-    path.setAttribute("d", `M ${from.x} ${from.y} Q ${mx} ${my - 38} ${to.x} ${to.y}`);
+    path.setAttribute("d", `M ${from.x} ${from.y} Q ${mx} ${my - 24} ${to.x} ${to.y}`);
     path.setAttribute("class", "path-line");
     svg.appendChild(path);
   }
@@ -121,6 +118,7 @@ function drawCell(cell, pos) {
   const group = document.createElementNS(SVG_NS, "g");
   group.setAttribute("class", `cell cell--${cell.type}`);
   group.dataset.type = cell.type;
+  group.style.setProperty("--accent", cell.color);
 
   const shadow = document.createElementNS(SVG_NS, "rect");
   setBoxAttributes(shadow, pos.x + 5, pos.y + 6);
@@ -133,32 +131,31 @@ function drawCell(cell, pos) {
   bg.setAttribute("filter", "url(#cellShadow)");
   group.appendChild(bg);
 
-  const accent = document.createElementNS(SVG_NS, "rect");
-  accent.setAttribute("x", String(pos.x - CELL_W / 2));
-  accent.setAttribute("y", String(pos.y - CELL_H / 2));
-  accent.setAttribute("width", String(CELL_W));
-  accent.setAttribute("height", "14");
-  accent.setAttribute("rx", "18");
-  accent.setAttribute("ry", "18");
-  accent.setAttribute("class", `cell-accent cell-accent--${cell.type}`);
-  group.appendChild(accent);
+  const topBar = document.createElementNS(SVG_NS, "rect");
+  topBar.setAttribute("x", String(pos.x - CELL_W / 2));
+  topBar.setAttribute("y", String(pos.y - CELL_H / 2));
+  topBar.setAttribute("width", String(CELL_W));
+  topBar.setAttribute("height", "14");
+  topBar.setAttribute("rx", "18");
+  topBar.setAttribute("ry", "18");
+  topBar.setAttribute("class", "cell-accent");
+  group.appendChild(topBar);
 
   const label = document.createElementNS(SVG_NS, "text");
   label.setAttribute("x", String(pos.x));
-  label.setAttribute("y", String(pos.y - 3));
+  label.setAttribute("y", String(pos.y - 2));
   label.setAttribute("class", `cell-text cell-text--${cell.type}`);
 
   const lines = wrapText(cell.label, cell.type === "day" ? 5 : 9);
   lines.forEach((line, index) => {
     const tspan = document.createElementNS(SVG_NS, "tspan");
     tspan.setAttribute("x", String(pos.x));
-    tspan.setAttribute("dy", index === 0 ? "0" : "1.2em");
+    tspan.setAttribute("dy", index === 0 ? "0" : "1.18em");
     tspan.textContent = line;
     label.appendChild(tspan);
   });
 
   group.appendChild(label);
-
   svg.appendChild(group);
 }
 
