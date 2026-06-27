@@ -7,11 +7,11 @@ const VIEW_H = 900;
 const CELL_W = 180;
 const CELL_H = 84;
 const GAP_X = 18;
-const GAP_Y = 26;
+const GAP_Y = 60;
 
 const MIN_COLS = 4;
 const MAX_COLS = 7;
-const TARGET_ROWS = 6;
+const TARGET_ROWS = 5;
 
 const board = document.getElementById("board");
 
@@ -161,7 +161,6 @@ function drawCell(cell, pos) {
   label.setAttribute("y", String(pos.y - 2));
   label.setAttribute("class", `cell-text cell-text--${cell.type}`);
 
-  const lines = wrapText(cell.label, cell.type === "day" ? 5 : 9);
   lines.forEach((line, index) => {
     const tspan = document.createElementNS(SVG_NS, "tspan");
     tspan.setAttribute("x", String(pos.x));
